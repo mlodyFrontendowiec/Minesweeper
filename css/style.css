@@ -58,7 +58,7 @@ html {
   padding: 0.5rem;
   font-family: "DIGITALDREAM";
   font-size: 3.2rem;
-  min-width: 8rem;
+  min-width: 9rem;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -151,10 +151,20 @@ html {
   border-color: white var(--primary-color--dark) var(--primary-color--dark)
     white;
 }
+.border--revealed {
+  border-width: 0.1rem;
+  border-color: var(--primary-color--dark);
+}
 .cell {
   width: var(--cell-size);
   height: var(--cell-size);
   cursor: pointer;
+}
+.cell--is--flag {
+  background-image: url("../assets/flag.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 2rem;
 }
 
 .hide {

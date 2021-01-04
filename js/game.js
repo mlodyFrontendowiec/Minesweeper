@@ -1,5 +1,7 @@
 import { Cell } from "./Cell.js";
 import { UI } from "./UI.js";
+import { Counter } from "./Counter.js";
+import { Timer } from "./Timer.js";
 class Game extends UI {
   #config = {
     easy: {
@@ -19,30 +21,48 @@ class Game extends UI {
     },
   };
 
+  #counter = new Counter();
+  #timer = new Timer();
+
   #numberOfRows = null;
   #numberOfCols = null;
   #numberOfMines = null;
 
   #cells = [];
+  #cellsElements = null;
   #board = null;
 
   initializeGame() {
     this.#handleElements();
+    this.#counter.init();
+    this.#timer.init();
     this.#newGame();
   }
   #newGame(
-    rows = this.#config.medium.rows,
-    cols = this.#config.medium.cols,
-    mines = this.#config.medium.mines
+    rows = this.#config.easy.rows,
+    cols = this.#config.easy.cols,
+    mines = this.#config.easy.mines
   ) {
     this.#numberOfRows = rows;
     this.#numberOfCols = cols;
     this.#numberOfMines = mines;
 
+    this.#counter.setValue(this.#numberOfMines);
+    this.#timer.startTimer();
+
     this.#setStyles();
 
     this.#generateCells();
     this.#renderBoard();
+
+    this.#cellsElements = this.getElements(this.UiSelectors.cell);
+    this.#addCellsEventsListeners();
+  }
+  #addCellsEventsListeners() {
+    this.#cellsElements.forEach((element) => {
+      element.addEventListener("click", this.#handleCellClick);
+      element.addEventListener("contextmenu", this.#handleCellContextMenu);
+    });
   }
 
   #handleElements() {
@@ -62,6 +82,32 @@ class Game extends UI {
       cell.element = cell.getElement(cell.selector);
     });
   }
+  #handleCellClick = (e) => {
+    const target = e.target;
+    const rowIndex = parseInt(target.getAttribute("data-y"), 10);
+    const colIndex = parseInt(target.getAttribute("data-x"), 10);
+
+    this.#cells[rowIndex][colIndex].revealCell();
+  };
+  #handleCellContextMenu = (e) => {
+    e.preventDefault();
+    const target = e.target;
+    const rowIndex = parseInt(target.getAttribute("data-y"), 10);
+    const colIndex = parseInt(target.getAttribute("data-x"), 10);
+
+    const cell = this.#cells[rowIndex][colIndex];
+    if (cell.isReveal) return;
+
+    if (cell.isFlagged) {
+      this.#counter.increment();
+      cell.toggleFlag();
+      return;
+    }
+    if (!!this.#counter.value) {
+      this.#counter.decrement();
+      cell.toggleFlag();
+    }
+  };
   #setStyles() {
     document.documentElement.style.setProperty(
       "--cells-in-row",
