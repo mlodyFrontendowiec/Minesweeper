@@ -2,6 +2,16 @@
   --primary-color: #c0c0c0;
   --primary-color--dark: #808080;
   --alarm-color: #f80000;
+
+  --cell-size: 4rem;
+  --game-pading: 1.5rem;
+  --border-width: 0.3rem;
+  --cells-in-row: 8;
+
+  --game-max-width: calc(
+    var(--cell-size) * var(--cells-in-row) + calc(2 * var(--game-pading)) +
+      calc(2 * var(--border-width))
+  );
 }
 @font-face {
   font-family: DIGITALDREAM;
@@ -27,8 +37,8 @@ html {
 
 .game {
   background-color: var(--primary-color);
-  padding: 1.5rem;
-  max-width: 35.6rem;
+  padding: var(--game-pading);
+  max-width: var(--game-max-width);
   margin: 0 auto;
 }
 .game__board {
@@ -131,7 +141,7 @@ html {
   border-color: black;
 }
 .border {
-  border: 0.3rem solid;
+  border: var(--border-width) solid;
 }
 .border--convex {
   border-color: var(--primary-color--dark) white white
@@ -142,8 +152,8 @@ html {
     white;
 }
 .cell {
-  width: 4rem;
-  height: 4rem;
+  width: var(--cell-size);
+  height: var(--cell-size);
   cursor: pointer;
 }
 
